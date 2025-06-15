@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AudioTO - Terapia Ocupacional em Áudio</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0D1117; /* Fundo escuro */
+            color: #E6EDF3; /* Texto claro */
+        }
+        .text-gradient {
+            background: linear-gradient(90deg, #3B82F6, #60A5FA, #93C5FD); /* Gradiente azul */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .bg-card {
+            background-color: rgba(22, 27, 34, 0.7); /* Card escuro semi-transparente */
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 148, 158, 0.2);
+        }
+        .bg-dark-section {
+             background-color: #161B22;
+        }
+        
+        /* Efeito de Aurora Interativo nos Cards */
+        .aurora-card {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .aurora-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.2);
+        }
+        .aurora-card::before {
+            content: "";
+            position: absolute;
+            left: var(--x);
+            top: var(--y);
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.2), transparent 50%); /* Aurora azul */
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .aurora-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Animação de Aurora no Fundo do Hero */
+        .hero-aurora-bg {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            background-color: #0D1117;
+        }
+        .hero-aurora-bg .aurora {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.6;
+        }
+        .aurora-1 {
+            width: 400px;
+            height: 400px;
+            background: #2563EB; /* Azul escuro */
+            top: -10%;
+            left: -10%;
+            animation: move-aurora-1 15s infinite alternate ease-in-out;
+        }
+        .aurora-2 {
+            width: 350px;
+            height: 350px;
+            background: #60A5FA; /* Azul claro */
+            top: 20%;
+            right: -15%;
+            animation: move-aurora-2 17s infinite alternate ease-in-out;
+        }
+        .aurora-3 {
+            width: 300px;
+            height: 300px;
+            background: #3B82F6; /* Azul médio */
+            bottom: -5%;
+            left: 30%;
+            animation: move-aurora-3 19s infinite alternate ease-in-out;
+        }
+        @keyframes move-aurora-1 {
+            to { transform: translate(100px, 200px); }
+        }
+        @keyframes move-aurora-2 {
+            to { transform: translate(-150px, -100px); }
+        }
+        @keyframes move-aurora-3 {
+            to { transform: translate(100px, -150px); }
+        }
+
+        /* Animações de Rolagem */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.215, 0.610, 0.355, 1), transform 0.8s cubic-bezier(0.215, 0.610, 0.355, 1);
+        }
+        .reveal-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Acordeão do FAQ */
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.215, 0.610, 0.355, 1), padding 0.5s cubic-bezier(0.215, 0.610, 0.355, 1);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- =========== Cabeçalho =========== -->
+    <header class="bg-card/70 shadow-sm fixed w-full top-0 z-50 transition-all">
+        <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="#" class="text-2xl font-bold text-gradient">AudioTO</a>
+                <nav class="hidden md:flex items-center space-x-2">
+                    <a href="#features" class="text-gray-300 hover:text-white px-4 py-2 text-sm font-medium rounded-md">Recursos</a>
+                    <a href="#testimonials" class="text-gray-300 hover:text-white px-4 py-2 text-sm font-medium rounded-md">Depoimentos</a>
+                    <a href="#plans" class="text-gray-300 hover:text-white px-4 py-2 text-sm font-medium rounded-md">Planos</a>
+                    <a href="#contact" class="text-gray-300 hover:text-white px-4 py-2 text-sm font-medium rounded-md">Contato</a>
+                </nav>
+                 <div class="hidden md:flex items-center space-x-5">
+                    <a href="/login.php" class="text-gray-300 hover:text-white font-medium transition-colors">Login</a>
+                    <!-- <a href="/registrar.php" class="bg-blue-600 text-white px-5 py-2 rounded-full font-medium hover:bg-blue-700 transition-colors shadow-sm">Crie sua Conta</a> -->
+                 </div>
+                 <button class="md:hidden text-gray-300"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- =========== Seção Principal (Hero) =========== -->
+    <section class="relative flex items-center justify-center min-h-screen pt-16 overflow-hidden">
+        <div class="hero-aurora-bg">
+            <div class="aurora aurora-1"></div>
+            <div class="aurora aurora-2"></div>
+            <div class="aurora aurora-3"></div>
+        </div>
+        <div class="relative max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+            <h1 class="text-4xl md:text-7xl font-black text-white mb-6 leading-tight tracking-tight reveal-on-scroll">
+                Estude Terapia Ocupacional
+                <br>
+                <span class="text-gradient">de um jeito novo</span>
+            </h1>
+            <p class="text-lg md:text-xl text-gray-300 mb-10 max-w-3xl mx-auto reveal-on-scroll" style="transition-delay: 150ms;">
+                Conteúdo didático em formato de podcast para estudantes e profissionais. O saber em áudio para sua rotina!
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center reveal-on-scroll" style="transition-delay: 300ms;">
+                <a href="#cta" class="bg-white text-gray-900 px-8 py-3 rounded-full font-bold text-lg hover:bg-gray-200 transition-transform transform hover:scale-105 shadow-2xl">
+                    Começar Gratuitamente
+                </a>
+                 <a href="#features" class="border-2 border-white/30 text-white px-8 py-3 rounded-full font-semibold text-lg hover:bg-white/10 transition-colors">
+                    Saiba Mais
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- =========== Seção de Recursos =========== -->
+    <section id="features" class="py-24 bg-dark-section">
+        <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal-on-scroll">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-4">Recursos que <span class="text-gradient">Potencializam</span></h2>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">Ferramentas para maximizar seu tempo e potencial de aprendizagem.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="aurora-card bg-card text-center p-8 rounded-2xl reveal-on-scroll">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-500 rounded-xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-500/20">
+                         <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Aprenda Ouvindo</h3>
+                    <p class="text-gray-400 leading-relaxed">Principais temas da TO em áudio. Estude no seu ritmo, onde e quando quiser.</p>
+                </div>
+                
+                <div class="aurora-card bg-card text-center p-8 rounded-2xl reveal-on-scroll" style="transition-delay: 150ms;">
+                    <div class="w-16 h-16 bg-gradient-to-br from-sky-500 to-cyan-400 rounded-xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-sky-500/20">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.871 4A1.871 1.871 0 003 5.871v12.258A1.871 1.871 0 004.871 20h14.258A1.871 1.871 0 0021 18.129V5.87A1.871 1.871 0 0019.129 4H4.87zM8 4v16M16 4v16"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14.25c-1.302 0-2.357-1.002-2.357-2.25s1.055-2.25 2.357-2.25c1.303 0 2.357 1.002 2.357 2.25s-1.054 2.25-2.357 2.25z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Didática Humanizada</h3>
+                    <p class="text-gray-400 leading-relaxed">Conteúdo pensado para facilitar o entendimento. Mais leveza e clareza.</p>
+                </div>
+                
+                <div class="aurora-card bg-card text-center p-8 rounded-2xl reveal-on-scroll" style="transition-delay: 300ms;">
+                    <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-500/20">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Acesso Imediato</h3>
+                    <p class="text-gray-400 leading-relaxed">Simples, rápido e digital. Crie sua conta e comece a ouvir. Sem instalação.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =========== Seção de Acesso =========== -->
+    <section class="py-24">
+        <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal-on-scroll">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-4">O que você terá <span class="text-gradient">acesso?</span></h2>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">Compare os recursos disponíveis em cada plano e escolha o melhor para você.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <!-- Plano Gratuito -->
+                <div class="aurora-card bg-card p-8 rounded-2xl reveal-on-scroll">
+                    <h3 class="text-2xl font-bold text-white mb-6">Plano Gratuito</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-center text-gray-300"><svg class="w-6 h-6 mr-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>Início</li>
+                        <li class="flex items-center text-gray-300"><svg class="w-6 h-6 mr-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>Podcasts (acesso limitado)</li>
+                        <li class="flex items-center text-gray-300"><svg class="w-6 h-6 mr-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>Oportunidades</li>
+                        <li class="flex items-center text-gray-300"><svg class="w-6 h-6 mr-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>Notícias</li>
+                    </ul>
+                </div>
+                <!-- Plano Premium -->
+                <div class="aurora-card bg-card p-8 rounded-2xl border-2 border-blue-500 reveal-on-scroll">
+                    <h3 class="text-2xl font-bold text-white mb-6">Plano Premium</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-center text-gray-300"><svg class="w-6 h-6 mr-3 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Todos os recursos do plano gratuito</li>
+                        <li class="flex items-center text-gray-300"><svg class="w-6 h-6 mr-3 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>Histórico de podcasts</li>
+                        <li class="flex items-center text-gray-300"><svg class="w-6 h-6 mr-3 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>Meus Favoritos</li>
+                        <li class="flex items-center text-gray-300"><svg class="w-6 h-6 mr-3 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>Comunidade exclusiva</li>
+                        <li class="flex items-center text-gray-300"><span class="inline-block bg-blue-500 text-white text-xs font-semibold mr-3 px-2 py-1 rounded-full">PREMIUM</span>Acesso ilimitado a todos os podcasts</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =========== Seção de Depoimentos =========== -->
+    <section id="testimonials" class="py-24">
+        <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal-on-scroll">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-4">Amado por <span class="text-gradient">Estudantes e Profissionais</span></h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="aurora-card bg-card p-8 rounded-2xl reveal-on-scroll">
+                    <p class="text-gray-300 mb-6 font-medium text-lg">“Posso estudar indo para a faculdade, no ônibus, em casa... mudou a forma como aprendo!”</p>
+                    <div class="flex items-center">
+                        <img class="h-12 w-12 rounded-full" src="https://placehold.co/100x100/D1E5FF/0D1117?text=MS" alt="Avatar de Mariana S.">
+                        <div class="ml-4">
+                            <h4 class="font-bold text-white">Mariana S.</h4>
+                            <p class="text-gray-400 text-sm">Estudante</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="aurora-card bg-card p-8 rounded-2xl reveal-on-scroll" style="transition-delay: 150ms;">
+                    <p class="text-gray-300 mb-6 font-medium text-lg">“Recomendo aos meus alunos. Didática excelente, muito mais engajamento na sala.”</p>
+                    <div class="flex items-center">
+                        <img class="h-12 w-12 rounded-full" src="https://placehold.co/100x100/A3C9FF/0D1117?text=RP" alt="Avatar de Ricardo">
+                        <div class="ml-4">
+                            <h4 class="font-bold text-white">Ricardo</h4>
+                            <p class="text-gray-400 text-sm">Professor</p>
+                        </div>
+                    </div>
+                </div>
+                 <div class="aurora-card bg-card p-8 rounded-2xl reveal-on-scroll" style="transition-delay: 300ms;">
+                    <p class="text-gray-300 mb-6 font-medium text-lg">“Uso para revisar conteúdo entre um atendimento e outro. É prático e direto ao ponto.”</p>
+                    <div class="flex items-center">
+                        <img class="h-12 w-12 rounded-full" src="https://placehold.co/100x100/93C5FD/0D1117?text=CT" alt="Avatar de Camila">
+                        <div class="ml-4">
+                            <h4 class="font-bold text-white">Camila, TO</h4>
+                            <p class="text-gray-400 text-sm">Terapeuta Ocupacional</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =========== Seção de Planos =========== -->
+    <section id="plans" class="py-24 bg-dark-section">
+        <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal-on-scroll">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-4">Escolha seu <span class="text-gradient">Plano</span></h2>
+                <p class="text-xl text-gray-400">Opções flexíveis para sua jornada de aprendizado.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <div class="aurora-card bg-card p-8 rounded-2xl reveal-on-scroll">
+                    <h3 class="text-2xl font-bold text-white">Gratuito</h3>
+                    <p class="mt-2 text-gray-400">Para começar a explorar.</p>
+                    <div class="mt-6"><span class="text-4xl font-extrabold text-white">R$0</span></div>
+                    <ul class="text-left space-y-4 mt-8 text-gray-400">
+                        <li class="flex items-start"><svg class="w-5 h-5 text-green-400 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Acesso a episódios selecionados</li>
+                        <li class="flex items-start"><svg class="w-5 h-5 text-green-400 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Playlists públicas</li>
+                    </ul>
+                    <a href="#cta" class="mt-8 block w-full text-center bg-gray-700 text-white py-3 rounded-full font-semibold hover:bg-gray-600 transition-colors">Começar Agora</a>
+                </div>
+                
+                <div class="aurora-card bg-card p-8 rounded-2xl border-2 border-blue-500 relative reveal-on-scroll">
+                    <h3 class="text-2xl font-bold text-white">Premium</h3>
+                    <p class="mt-2 text-gray-400">Acesso total e ilimitado.</p>
+                    <div class="mt-6"><span class="text-4xl font-extrabold text-white">R$ 39,90</span><span class="text-lg text-gray-400">/mês</span></div>
+                    <ul class="text-left space-y-4 mt-8 text-gray-400">
+                        <li class="flex items-start"><svg class="w-5 h-5 text-green-400 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Acesso a TODOS os episódios</li>
+                        <li class="flex items-start"><svg class="w-5 h-5 text-green-400 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Playlists inteiras</li>
+                        <li class="flex items-start"><svg class="w-5 h-5 text-green-400 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Sugestão e votação de novos temas</li>
+                        <li class="flex items-start"><svg class="w-5 h-5 text-green-400 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Certificados para horas complementares atraves de oportunidades</li>
+                    </ul>
+                    <a href="#cta" class="mt-8 block w-full text-center bg-gradient-to-r from-sky-500 to-blue-600 text-white py-3 rounded-full font-semibold hover:opacity-90 transition-opacity">Escolher Premium</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =========== Seção de CTA (Call to Action) =========== -->
+    <section id="cta" class="py-24">
+        <div class="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 reveal-on-scroll">
+            <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-6">Pronto para transformar sua forma de aprender?</h2>
+            <p class="text-xl text-gray-400 mb-8">Junte-se a milhares de estudantes e profissionais que já estão à frente com a AudioTO.</p>
+            <a href="#" class="bg-white text-gray-900 px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-200 transition-transform transform hover:scale-105 shadow-2xl">Comece sua Jornada Agora</a>
+        </div>
+    </section>
+
+    <!-- =========== Rodapé =========== -->
+    <footer id="contact" class="bg-dark-section border-t border-gray-700/50">
+        <div class="max-w-screen-xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="text-center text-gray-400">
+                 <p class="text-sm">&copy; 2025 AudioTO. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Animações de Rolagem
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+
+            // Efeito de Aurora nos Cards
+            const cards = document.querySelectorAll('.aurora-card');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty('--x', `${x}px`);
+                    card.style.setProperty('--y', `${y}px`);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
