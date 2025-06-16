@@ -32,6 +32,9 @@ $totalUtilizadores = 0;
 $novosUtilizadoresUltimos30Dias = 0;
 $totalPodcasts = 0;
 $totalAssinaturasAtivas = 0;
+$totalFlashcards = 0;
+$totalPerguntasQuiz = 0;
+$totalPlanos = 0;
 $erro_metricas = null;
 $labelsMeses = [];
 $dataNovosUtilizadoresMes = [];
@@ -55,6 +58,18 @@ try {
     $stmt = $pdo->query("SELECT COUNT(id_assinatura) FROM assinaturas_utilizador WHERE estado_assinatura = 'ativa'");
     $totalAssinaturasAtivas = $stmt->fetchColumn();
 
+    // Total de Flashcards
+    $stmt = $pdo->query("SELECT COUNT(id_flashcard) FROM flashcards");
+    $totalFlashcards = $stmt->fetchColumn();
+
+    // Total de Perguntas do Quiz
+    $stmt = $pdo->query("SELECT COUNT(id_pergunta) FROM quiz_perguntas");
+    $totalPerguntasQuiz = $stmt->fetchColumn();
+
+    // Total de Planos de Assinatura
+    $stmt = $pdo->query("SELECT COUNT(id_plano) FROM planos_assinatura");
+    $totalPlanos = $stmt->fetchColumn();
+
     // Dados para o gráfico de Novos Utilizadores (últimos 6 meses)
     for ($i = 5; $i >= 0; $i--) {
         $mesReferencia = date('Y-m-01', strtotime("-$i month"));
@@ -75,7 +90,7 @@ try {
 } catch (PDOException $e) {
     $erro_metricas = "Erro ao carregar métricas: " . $e->getMessage();
     error_log("Erro PDO no Dashboard: " . $e->getMessage());
-    $totalUtilizadores = $novosUtilizadoresUltimos30Dias = $totalPodcasts = $totalAssinaturasAtivas = 0; // Default to 0 on error
+    $totalUtilizadores = $novosUtilizadoresUltimos30Dias = $totalPodcasts = $totalAssinaturasAtivas = $totalFlashcards = $totalPerguntasQuiz = $totalPlanos = 0; // Default to 0 on error
     $labelsMeses = []; // Default to empty on error
     $dataNovosUtilizadoresMes = []; // Default to empty on error
     $dataFaturacaoMes = []; // Default to empty on error
@@ -299,6 +314,36 @@ try {
                 </section>
 
                 <section class="row g-4 mb-4">
+                    <div class="col-xl-4 col-md-6">
+                        <div class="metric-card text-center text-secondary">
+                            <div class="metric-icon bg-secondary-subtle text-secondary mx-auto">
+                                <i class="fas fa-clone"></i>
+                            </div>
+                            <div class="metric-value"><?php echo htmlspecialchars($totalFlashcards); ?></div>
+                            <div class="metric-label">Flashcards</div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-6">
+                        <div class="metric-card text-center text-danger">
+                            <div class="metric-icon bg-danger-subtle text-danger mx-auto">
+                                <i class="fas fa-question-circle"></i>
+                            </div>
+                            <div class="metric-value"><?php echo htmlspecialchars($totalPerguntasQuiz); ?></div>
+                            <div class="metric-label">Perguntas do Quiz</div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-6">
+                        <div class="metric-card text-center text-info">
+                            <div class="metric-icon bg-info-subtle text-info mx-auto">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="metric-value"><?php echo htmlspecialchars($totalPlanos); ?></div>
+                            <div class="metric-label">Planos Ativos</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="row g-4 mb-4">
                     <div class="col-lg-7">
                         <div class="chart-card">
                             <h5 class="card-title mb-3 fw-semibold"><i class="fas fa-chart-line me-2 text-primary"></i>Novos Utilizadores (Últimos 6 Meses)</h5>
@@ -379,14 +424,58 @@ try {
                                 </div>
                             </a>
                         </div>
-                         <div class="col-sm-6 col-lg-4">
-                             <a href="gerir_oportunidades.php" class="quick-action-card d-flex align-items-center">
+                        <div class="col-sm-6 col-lg-4">
+                            <a href="gerir_oportunidades.php" class="quick-action-card d-flex align-items-center">
                                 <div class="quick-action-icon me-3">
                                     <i class="fas fa-bullhorn"></i>
                                 </div>
                                 <div>
                                     <h6 class="mb-0 fw-bold">Gerir Oportunidades</h6>
                                     <small class="text-muted">Cursos, vagas e eventos.</small>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                            <a href="gerir_flashcards.php" class="quick-action-card d-flex align-items-center">
+                                <div class="quick-action-icon me-3">
+                                    <i class="fas fa-clone"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 fw-bold">Gerir Flashcards</h6>
+                                    <small class="text-muted">Adicionar ou editar cartões.</small>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                            <a href="gerir_quiz.php" class="quick-action-card d-flex align-items-center">
+                                <div class="quick-action-icon me-3">
+                                    <i class="fas fa-question-circle"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 fw-bold">Gerir Quiz</h6>
+                                    <small class="text-muted">Perguntas e respostas.</small>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                            <a href="gerir_planos.php" class="quick-action-card d-flex align-items-center">
+                                <div class="quick-action-icon me-3">
+                                    <i class="fas fa-dollar-sign"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 fw-bold">Gerir Planos</h6>
+                                    <small class="text-muted">Planos de assinatura.</small>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                            <a href="gerir_assinaturas.php" class="quick-action-card d-flex align-items-center">
+                                <div class="quick-action-icon me-3">
+                                    <i class="fas fa-file-contract"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 fw-bold">Gerir Assinaturas</h6>
+                                    <small class="text-muted">Visualizar e controlar assinaturas.</small>
                                 </div>
                             </a>
                         </div>

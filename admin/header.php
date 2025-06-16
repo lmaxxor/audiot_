@@ -90,14 +90,14 @@ $userFirstName_for_header = explode(' ', $userName_for_header)[0];
                             <p class="mb-0 text-muted small text-truncate"><?php echo htmlspecialchars($userEmail_for_header); ?></p>
                         </div>
                     </li>
-                    <li><a class="dropdown-item py-2 d-flex align-items-center" href="../perfil_page_v1.html"> {/* Assuming perfil_page_v1.html exists */}
+                    <li><a class="dropdown-item py-2 d-flex align-items-center" href="../perfil_page_v1.html"><!-- Assuming perfil_page_v1.html exists -->
                         <i class="fas fa-user-circle fa-fw me-2 text-secondary"></i> Meu Perfil
                     </a></li>
                     <li><a class="dropdown-item py-2 d-flex align-items-center" href="../inicio.php">
                         <i class="fas fa-external-link-alt fa-fw me-2 text-secondary"></i> Ver Site Principal
                     </a></li>
                     <li><hr class="dropdown-divider my-1"></li>
-                    <li><a class="dropdown-item py-2 d-flex align-items-center text-danger" href="../logout_handler.php"> {/* Assuming logout_handler.php exists */}
+                    <li><a class="dropdown-item py-2 d-flex align-items-center text-danger" href="../logout_handler.php"><!-- Assuming logout_handler.php exists -->
                         <i class="fas fa-sign-out-alt fa-fw me-2"></i> Sair
                     </a></li>
                 </ul>
