@@ -39,6 +39,33 @@ function get_user_avatar_placeholder($user_name, $avatar_url_from_session, $size
 $avatarUrl = get_user_avatar_placeholder($userName, $userAvatarUrlSession, 40);
 $avatarUrlSmall = get_user_avatar_placeholder($userName, $userAvatarUrlSession, 36);
 
+require_once __DIR__ . '/track_section.php';
+track_section('inicio');
+require_once __DIR__ . '/badge_functions.php';
+
+$user_badges = [];
+if ($userId) {
+    try {
+        $stmt = $pdo->prepare("SELECT COUNT(DISTINCT pr.id_podcast) FROM posicao_reproducao_utilizador pr JOIN podcasts p ON pr.id_podcast = p.id_podcast WHERE pr.id_utilizador = ? AND p.duracao_total_segundos > 0 AND pr.posicao_segundos >= p.duracao_total_segundos");
+        $stmt->execute([$userId]);
+        if ($stmt->fetchColumn() >= 10) { award_badge_if_not_exists($pdo, $userId, 'maratonista'); }
+    } catch (PDOException $e) {}
+    try {
+        $stmt = $pdo->prepare("SELECT pontos_totais FROM utilizador_pontos WHERE id_utilizador = ?");
+        $stmt->execute([$userId]);
+        if ((int)$stmt->fetchColumn() >= 50) { award_badge_if_not_exists($pdo, $userId, 'sabe-tudo'); }
+    } catch (PDOException $e) {}
+    try {
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM comunidade_posts WHERE id_utilizador = ?");
+        $stmt->execute([$userId]);
+        if ($stmt->fetchColumn() >= 1) { award_badge_if_not_exists($pdo, $userId, 'colaborador'); }
+    } catch (PDOException $e) {}
+    if (!empty($_SESSION['visited_sections']) && count(array_intersect(['podcasts','quiz','comunidade','oportunidades'], $_SESSION['visited_sections'])) >= 4) {
+        award_badge_if_not_exists($pdo, $userId, 'explorador');
+    }
+    $user_badges = get_user_badges($pdo, $userId);
+}
+
 // --- LÓGICA PARA BUSCAR DADOS DO DASHBOARD ---
 
 // 5.1. Continuar Ouvindo
@@ -494,6 +521,15 @@ if ($userId) {
             </header>
 
             <main class="flex-1 overflow-x-hidden overflow-y-auto bg-light-bg p-5 md:p-7 space-y-7">
+                <?php if (!empty($user_badges)): ?>
+                <section class="flex flex-wrap gap-2 mb-4">
+                    <?php foreach ($user_badges as $b): ?>
+                    <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center" title="<?= htmlspecialchars($b['descricao']) ?>">
+                        <i class="<?= htmlspecialchars($b['icone']) ?> mr-1"></i><?= htmlspecialchars($b['nome']) ?>
+                    </span>
+                    <?php endforeach; ?>
+                </section>
+                <?php endif; ?>
                 <section class="bg-gradient-to-r from-brand-banner-end to-brand-banner-start text-white p-6 sm:p-8 rounded-xl shadow-lg form-element-animated" style="animation-name: fadeInUp;">
                     <div class="flex justify-between items-center">
                         <div>

@@ -6,7 +6,9 @@ ob_start();
 
 require_once __DIR__ . '/sessao/session_handler.php';
 requireLogin('login.php'); 
-require_once __DIR__ . '/db/db_connect.php'; 
+require_once __DIR__ . '/db/db_connect.php';
+require_once __DIR__ . '/track_section.php';
+track_section('oportunidades');
 
 $pageTitle = "Oportunidades - Audio TO";
 

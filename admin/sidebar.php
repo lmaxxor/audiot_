@@ -80,6 +80,12 @@ $nav_items = [
         'icon' => 'fas fa-file-contract',
         'text' => 'Assinaturas',
         'page_id' => 'gerir_assinaturas.php'
+    ],
+    [
+        'href' => 'gerir_badges.php',
+        'icon' => 'fas fa-award',
+        'text' => 'Badges',
+        'page_id' => 'gerir_badges.php'
     ]
 
 ];
