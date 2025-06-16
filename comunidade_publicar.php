@@ -30,6 +30,8 @@ try {
     $stmt->bindParam(':t', $title);
     $stmt->bindParam(':c', $content);
     $stmt->execute();
+    require_once __DIR__ . '/badge_functions.php';
+    award_badge_if_not_exists($pdo, $_SESSION['user_id'], 'colaborador');
     $_SESSION['community_success'] = 'Publicação criada com sucesso!';
 } catch (PDOException $e) {
     error_log('Erro ao criar post: ' . $e->getMessage());

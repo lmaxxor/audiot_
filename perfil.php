@@ -10,6 +10,7 @@ requireLogin('login.php');
 
 // 2. Incluir a conexão com o banco de dados
 require_once __DIR__ . '/db/db_connect.php'; // Garanta que este caminho está correto e $pdo é inicializado
+require_once __DIR__ . '/badge_functions.php';
 
 $pageTitle = "Meu Perfil - AudioTO";
 
@@ -20,6 +21,7 @@ $userEmail = $_SESSION['user_email'] ?? 'utilizador@exemplo.com';
 $userAvatarUrlSession = $_SESSION['user_avatar_url'] ?? null;
 $userProfession = ''; // Será carregado do DB se existir
 $userCrefito = '';    // Será carregado do DB se existir
+$userBadges = $userId ? get_user_badges($pdo, $userId) : [];
 
 if ($userId && isset($pdo)) {
     try {
@@ -446,7 +448,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $userId && isset($pdo)) {
 
             <main class="flex-1 overflow-x-hidden overflow-y-auto bg-light-bg p-6 md:p-8 space-y-8">
                 
-                <h2 class="text-3xl font-semibold text-dark-text sm:hidden">Meu Perfil</h2> 
+                <h2 class="text-3xl font-semibold text-dark-text sm:hidden">Meu Perfil</h2>
+                <?php if (!empty($userBadges)): ?>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <?php foreach ($userBadges as $b): ?>
+                    <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center" title="<?= htmlspecialchars($b['descricao']) ?>">
+                        <i class="<?= htmlspecialchars($b['icone']) ?> mr-1"></i><?= htmlspecialchars($b['nome']) ?>
+                    </span>
+                    <?php endforeach; ?>
+                </div>
+                <?php endif; ?>
                 <?php if ($updateMessage): ?>
                     <div id="alertMessage" class="floating-alert success" role="alert" style="opacity:0; transform: translateY(-20px);">
                         <?php echo htmlspecialchars($updateMessage); ?>
