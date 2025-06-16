@@ -56,7 +56,31 @@ $nav_items = [
     'icon' => 'fas fa-newspaper', // Notícias icon (válido no Font Awesome)
     'text' => 'Notícias',
     'page_id' => 'gerir_noticias.php'
-]
+    ],
+    [
+        'href' => 'gerir_flashcards.php',
+        'icon' => 'fas fa-clone',
+        'text' => 'Flashcards',
+        'page_id' => 'gerir_flashcards.php'
+    ],
+    [
+        'href' => 'gerir_quiz.php',
+        'icon' => 'fas fa-question-circle',
+        'text' => 'Quiz',
+        'page_id' => 'gerir_quiz.php'
+    ],
+    [
+        'href' => 'gerir_planos.php',
+        'icon' => 'fas fa-dollar-sign',
+        'text' => 'Planos',
+        'page_id' => 'gerir_planos.php'
+    ],
+    [
+        'href' => 'gerir_assinaturas.php',
+        'icon' => 'fas fa-file-contract',
+        'text' => 'Assinaturas',
+        'page_id' => 'gerir_assinaturas.php'
+    ]
 
 ];
 
