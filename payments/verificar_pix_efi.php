@@ -33,7 +33,7 @@ try {
             $pdo->beginTransaction();
             try {
                 // Buscar a assinatura e o plano associado pelo txid
-                $stmtAssinatura = $pdo->prepare("SELECT a.*, p.preco_mensal, p.preco_anual FROM assinaturas_utilizador a JOIN planos_assinatura p ON a.id_plano = p.id_plano WHERE a.id_transacao_gateway = ? AND a.id_utilizador = ? AND a.estado_assinatura = 'pendente_pagamento'");
+                $stmtAssinatura = $pdo->prepare("SELECT a.*, p.preco_mensal, p.preco_anual FROM assinaturas_utilizador a JOIN planos_assinatura p ON a.id_plano = p.id_plano WHERE a.id_transacao_gateway = ? AND a.gateway = 'efi' AND a.id_utilizador = ? AND a.estado_assinatura = 'pendente_pagamento'");
                 $stmtAssinatura->execute([$txid, $id_utilizador]);
                 $assinatura = $stmtAssinatura->fetch(PDO::FETCH_ASSOC);
 

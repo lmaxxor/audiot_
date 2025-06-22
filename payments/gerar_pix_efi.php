@@ -42,7 +42,7 @@ $pdo->beginTransaction();
 
 try {
     // 1. Criar registro de assinatura pendente
-    $stmt = $pdo->prepare("INSERT INTO assinaturas_utilizador (id_utilizador, id_plano, data_inicio, estado_assinatura) VALUES (?, ?, NOW(), 'pendente_pagamento')");
+    $stmt = $pdo->prepare("INSERT INTO assinaturas_utilizador (id_utilizador, id_plano, data_inicio, estado_assinatura, gateway) VALUES (?, ?, NOW(), 'pendente_pagamento', 'efi')");
     $stmt->execute([$id_utilizador, $id_plano]);
     $id_assinatura_criada = $pdo->lastInsertId();
 
@@ -73,7 +73,7 @@ try {
     $txid = $pixResponse['txid'];
 
     // 4. Atualizar assinatura pendente com o txid da Efí
-    $stmt = $pdo->prepare("UPDATE assinaturas_utilizador SET id_transacao_gateway = ? WHERE id_assinatura = ?");
+    $stmt = $pdo->prepare("UPDATE assinaturas_utilizador SET id_transacao_gateway = ?, gateway = 'efi' WHERE id_assinatura = ?");
     $stmt->execute([$txid, $id_assinatura_criada]);
 
     // 5. Obter dados do QR Code
