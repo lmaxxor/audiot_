@@ -3,6 +3,8 @@ require_once __DIR__ . '/sessao/session_handler.php';
 requireLogin('login.php'); // Garante que o utilizador está logado
 require_once __DIR__ . '/db/db_connect.php'; // Conexão com o banco de dados
 require_once __DIR__ . '/sessao/csrf.php';
+require_once __DIR__ . '/track_section.php';
+track_section('comunidade');
 
 // Variáveis específicas da página
 $pageTitle = "Comunidade - AudioTO";
