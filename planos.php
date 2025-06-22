@@ -385,6 +385,14 @@ try {
                     <label for="pixNome" class="block text-sm font-medium text-gray-700 mb-1">Nome Completo do Pagador:</label>
                     <input type="text" id="pixNome" name="pixNome" value="<?= htmlspecialchars($_SESSION['user_nome_completo'] ?? '') ?>" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary-blue focus:border-primary-blue" placeholder="Seu nome completo">
                 </div>
+                <div class="mb-4">
+                    <label for="paymentProvider" class="block text-sm font-medium text-gray-700 mb-1">Forma de Pagamento:</label>
+                    <select id="paymentProvider" class="w-full p-2 border border-gray-300 rounded-md">
+                        <option value="efi-pix">Pix (EfiPay)</option>
+                        <option value="asaas-pix">Pix (Asaas)</option>
+                        <option value="asaas-card">Cartão de Crédito (Asaas)</option>
+                    </select>
+                </div>
                 <input type="hidden" id="modalPlanIdInput" value="">
                 <input type="hidden" id="modalPlanAmountInput" value="">
 
@@ -481,6 +489,7 @@ try {
 
         const pixCpfInput = document.getElementById('pixCpf');
         const pixNomeInput = document.getElementById('pixNome');
+        const paymentProviderSelect = document.getElementById('paymentProvider');
         const generatePixButton = document.getElementById('generatePixButton');
         const generatePixButtonText = document.getElementById('generatePixButtonText');
         const generatePixButtonSpinner = document.getElementById('generatePixButtonSpinner');
@@ -593,15 +602,20 @@ try {
                 pixFormStep.classList.add('hidden');
                 pixLoading.classList.remove('hidden');
 
+                const provider = paymentProviderSelect ? paymentProviderSelect.value : 'efi-pix';
                 const formData = new FormData();
                 formData.append('amount', amount);
                 formData.append('cpf', cpf);
                 formData.append('nome', nome);
                 formData.append('planId', planId);
-                formData.append('userId', userId); // Enviar userId para o backend
+                formData.append('userId', userId);
+
+                let generateEndpoint = 'payments/gerar_pix_efi.php';
+                if (provider === 'asaas-pix') generateEndpoint = 'payments/gerar_pix_asaas.php';
+                if (provider === 'asaas-card') generateEndpoint = 'payments/gerar_cartao_asaas.php';
 
                 try {
-                    const response = await fetch('payments/gerar_pix_efi.php', {
+                    const response = await fetch(generateEndpoint, {
                         method: 'POST',
                         body: formData
                     });
@@ -683,7 +697,14 @@ try {
 
 
                 try {
-                    const response = await fetch(`payments/verificar_pix_efi.php?txid=${txid}`);
+                    let verifyEndpoint = 'payments/verificar_pix_efi.php?txid=' + txid;
+                    if (paymentProviderSelect && paymentProviderSelect.value === 'asaas-pix') {
+                        verifyEndpoint = `payments/verificar_pix_asaas.php?txid=${txid}`;
+                    }
+                    if (paymentProviderSelect && paymentProviderSelect.value === 'asaas-card') {
+                        verifyEndpoint = `payments/verificar_cartao_asaas.php?paymentId=${txid}`;
+                    }
+                    const response = await fetch(verifyEndpoint);
                     const data = await response.json();
 
                     if (data.success) {

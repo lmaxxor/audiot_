@@ -2,15 +2,26 @@
 
 Este projeto fornece uma implementação em PHP para integração com a API Pix da Efi Bank, facilitando a criação de cobranças e verificação de pagamentos.  
 
-## 📌 Requisitos  
+## 📌 Requisitos
 - PHP 8.0 ou superior  
 - Composer  
-- Certificado da API Pix da Efi Bank (.p12 ou .pem)  
-- Conta EfiPay com credenciais válidas  
+- Certificado da API Pix da Efi Bank (.p12 ou .pem)
+- Conta EfiPay com credenciais válidas
+- Token da API do Asaas (caso utilize este gateway)
 
 ## Pré-Instalação
 ```bash
     composer require efipay/sdk-php-apis-efi:^1.12
+```
+
+Caso utilize o Asaas, nenhuma dependência extra é necessária, mas configure as variáveis de ambiente abaixo:
+
+```env
+ASAAS_API_KEY="seu_token_aqui"
+ASAAS_WEBHOOK_URL="https://exemplo.com/webhook-asaas"
+# Opcional
+ASAAS_SANDBOX=true
+ASAAS_API_URL="https://api.asaas.com/v3/"
 ```
 
 
