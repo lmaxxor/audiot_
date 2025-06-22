@@ -119,7 +119,7 @@ try {
                  FROM assinaturas_utilizador a
                  JOIN planos_assinatura p ON a.id_plano = p.id_plano
                  JOIN utilizadores u ON a.id_utilizador = u.id_utilizador
-                 WHERE a.id_transacao_gateway = ? AND a.estado_assinatura = 'pendente_pagamento'"
+                WHERE a.id_transacao_gateway = ? AND a.gateway = 'efi' AND a.estado_assinatura = 'pendente_pagamento'"
             );
             $stmtAssinatura->execute([$txid]);
             $assinatura = $stmtAssinatura->fetch(PDO::FETCH_ASSOC);

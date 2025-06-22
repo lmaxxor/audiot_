@@ -39,7 +39,7 @@ $assinaturas = [];
 $utilizadores = [];
 $planos = [];
 try {
-    $assinaturas = $pdo->query('SELECT a.id_assinatura, u.nome_completo, u.email, p.nome_plano, a.data_inicio, a.data_fim, a.data_proxima_cobranca, a.estado_assinatura FROM assinaturas_utilizador a JOIN utilizadores u ON a.id_utilizador=u.id_utilizador JOIN planos_assinatura p ON a.id_plano=p.id_plano ORDER BY a.id_assinatura DESC')->fetchAll();
+    $assinaturas = $pdo->query('SELECT a.id_assinatura, u.nome_completo, u.email, p.nome_plano, a.data_inicio, a.data_fim, a.data_proxima_cobranca, a.estado_assinatura, a.gateway FROM assinaturas_utilizador a JOIN utilizadores u ON a.id_utilizador=u.id_utilizador JOIN planos_assinatura p ON a.id_plano=p.id_plano ORDER BY a.id_assinatura DESC')->fetchAll();
     $utilizadores = $pdo->query('SELECT id_utilizador, nome_completo FROM utilizadores ORDER BY nome_completo')->fetchAll();
     $planos = $pdo->query('SELECT id_plano, nome_plano FROM planos_assinatura ORDER BY nome_plano')->fetchAll();
 } catch (PDOException $e) {
@@ -110,6 +110,7 @@ if (!$avatarUrl_for_header) {
                                 <th>ID</th>
                                 <th>Utilizador</th>
                                 <th>Plano</th>
+                                <th>Gateway</th>
                                 <th>Estado</th>
                                 <th>Início</th>
                                 <th>Próxima Cobrança</th>
@@ -123,6 +124,7 @@ if (!$avatarUrl_for_header) {
                                 <td><?php echo $a['id_assinatura']; ?></td>
                                 <td><?php echo htmlspecialchars($a['nome_completo']); ?><br><small><?php echo htmlspecialchars($a['email']); ?></small></td>
                                 <td><?php echo htmlspecialchars($a['nome_plano']); ?></td>
+                                <td><?php echo htmlspecialchars($a['gateway'] ?? '-'); ?></td>
                                 <td><?php echo htmlspecialchars($a['estado_assinatura']); ?></td>
                                 <td><?php echo $a['data_inicio']; ?></td>
                                 <td><?php echo $a['data_proxima_cobranca'] ?? '-'; ?></td>
