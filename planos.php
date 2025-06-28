@@ -385,33 +385,6 @@ try {
                     <label for="pixNome" class="block text-sm font-medium text-gray-700 mb-1">Nome Completo do Pagador:</label>
                     <input type="text" id="pixNome" name="pixNome" value="<?= htmlspecialchars($_SESSION['user_nome_completo'] ?? '') ?>" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary-blue focus:border-primary-blue" placeholder="Seu nome completo">
                 </div>
-                <div class="mb-4">
-                    <label for="paymentProvider" class="block text-sm font-medium text-gray-700 mb-1">Forma de Pagamento:</label>
-                    <select id="paymentProvider" class="w-full p-2 border border-gray-300 rounded-md">
-                        <option value="efi-pix">Pix (EfiPay)</option>
-                        <option value="asaas-pix">Pix (Asaas)</option>
-                        <option value="asaas-card">Cartão de Crédito (Asaas)</option>
-                    </select>
-                </div>
-                <div id="cardForm" class="hidden">
-                    <div class="mb-4">
-                        <label for="cardNumber" class="block text-sm font-medium text-gray-700 mb-1">Número do Cartão:</label>
-                        <input type="text" id="cardNumber" class="w-full p-2 border border-gray-300 rounded-md" placeholder="4111111111111111">
-                    </div>
-                    <div class="flex space-x-2 mb-4">
-                        <div class="w-1/2">
-                            <label for="cardExpiryMonth" class="block text-sm font-medium text-gray-700 mb-1">Mês</label>
-                            <input type="text" id="cardExpiryMonth" class="w-full p-2 border border-gray-300 rounded-md" placeholder="MM">
-                        </div>
-                        <div class="w-1/2">
-                            <label for="cardExpiryYear" class="block text-sm font-medium text-gray-700 mb-1">Ano</label>
-                            <input type="text" id="cardExpiryYear" class="w-full p-2 border border-gray-300 rounded-md" placeholder="AA">
-                        </div>
-                    </div>
-                    <div class="mb-4">
-                        <label for="cardCvv" class="block text-sm font-medium text-gray-700 mb-1">CVV:</label>
-                        <input type="text" id="cardCvv" class="w-full p-2 border border-gray-300 rounded-md" placeholder="123">
-                    </div>
                 </div>
                 <input type="hidden" id="modalPlanIdInput" value="">
                 <input type="hidden" id="modalPlanAmountInput" value="">
@@ -501,21 +474,11 @@ try {
         const pixFormStep = document.getElementById('pixFormStep');
         const pixQrCodeStep = document.getElementById('pixQrCodeStep');
         const pixLoading = document.getElementById('pixLoading');
-        const cardForm = document.getElementById('cardForm');
-        const cardNumberInput = document.getElementById('cardNumber');
-        const cardExpiryMonthInput = document.getElementById('cardExpiryMonth');
-        const cardExpiryYearInput = document.getElementById('cardExpiryYear');
-        const cardCvvInput = document.getElementById('cardCvv');
-        const pixModalTitle = document.getElementById('pixModalTitle');
-
-        const modalPlanName = document.getElementById('modalPlanName');
-        const modalPlanPrice = document.getElementById('modalPlanPrice');
         const modalPlanIdInput = document.getElementById('modalPlanIdInput');
         const modalPlanAmountInput = document.getElementById('modalPlanAmountInput');
 
         const pixCpfInput = document.getElementById('pixCpf');
         const pixNomeInput = document.getElementById('pixNome');
-        const paymentProviderSelect = document.getElementById('paymentProvider');
         const generatePixButton = document.getElementById('generatePixButton');
         const generatePixButtonText = document.getElementById('generatePixButtonText');
         const generatePixButtonSpinner = document.getElementById('generatePixButtonSpinner');
@@ -530,20 +493,6 @@ try {
         let checkPixInterval = null;
         let userId = <?= json_encode($userId) ?>; // Pega o ID do usuário do PHP
 
-        function updateProviderUI() {
-            if (paymentProviderSelect && paymentProviderSelect.value === 'asaas-card') {
-                cardForm.classList.remove('hidden');
-                generatePixButtonText.textContent = 'Pagar com Cartão';
-                pixModalTitle.textContent = 'Pagar com Cartão - ' + modalPlanName.textContent;
-            } else {
-                cardForm.classList.add('hidden');
-                generatePixButtonText.textContent = 'Gerar QR Code Pix';
-                pixModalTitle.textContent = 'Pagar com Pix - ' + modalPlanName.textContent;
-            }
-        }
-        if (paymentProviderSelect) {
-            paymentProviderSelect.addEventListener('change', updateProviderUI);
-        }
 
         function openPixModal(planId, planName, planAmountFormatted, planAmountRaw) {
             if (parseFloat(planAmountRaw) <= 0) {
@@ -571,7 +520,6 @@ try {
             generatePixButtonText.textContent = 'Gerar QR Code Pix';
             generatePixButtonSpinner.classList.add('hidden');
 
-            updateProviderUI();
 
 
             pixModal.classList.remove('hidden');
@@ -645,32 +593,14 @@ try {
                 pixFormStep.classList.add('hidden');
                 pixLoading.classList.remove('hidden');
 
-                const provider = paymentProviderSelect ? paymentProviderSelect.value : 'efi-pix';
                 const formData = new FormData();
                 formData.append('amount', amount);
                 formData.append('cpf', cpf);
                 formData.append('nome', nome);
                 formData.append('planId', planId);
                 formData.append('userId', userId);
-                if (provider === 'asaas-card') {
-                    if (!cardNumberInput.value || !cardExpiryMonthInput.value || !cardExpiryYearInput.value || !cardCvvInput.value) {
-                        pixFormError.textContent = 'Preencha os dados do cartão.';
-                        generatePixButton.disabled = false;
-                        generatePixButtonText.textContent = 'Pagar com Cartão';
-                        generatePixButtonSpinner.classList.add('hidden');
-                        pixFormStep.classList.remove('hidden');
-                        pixLoading.classList.add('hidden');
-                        return;
-                    }
-                    formData.append('number', cardNumberInput.value);
-                    formData.append('expiryMonth', cardExpiryMonthInput.value);
-                    formData.append('expiryYear', cardExpiryYearInput.value);
-                    formData.append('cvv', cardCvvInput.value);
-                }
 
-                let generateEndpoint = 'payments/gerar_pix_efi.php';
-                if (provider === 'asaas-pix') generateEndpoint = 'payments/gerar_pix_asaas.php';
-                if (provider === 'asaas-card') generateEndpoint = 'payments/gerar_cartao_asaas.php';
+                let generateEndpoint = "payments/mercadopago/gerar_pix.php";
 
                 try {
                     const response = await fetch(generateEndpoint, {
@@ -682,25 +612,16 @@ try {
                     pixLoading.classList.add('hidden');
                     generatePixButton.disabled = false;
                     generatePixButtonSpinner.classList.add('hidden');
-                    updateProviderUI();
 
 
                     if (data.success) {
-                        if (provider === 'asaas-card') {
-                            currentTxidInput.value = data.paymentId;
-                            pixQrCodeStep.classList.add('hidden');
-                            pixStatusMessage.textContent = 'Processando pagamento...';
-                            pixStatusMessage.className = 'mt-4 p-3 rounded-md text-sm bg-blue-100 text-blue-700 border border-blue-300';
-                            startPixStatusCheck(data.paymentId);
-                        } else {
                             pixQrCodeImage.src = data.qrCodeImageUrl;
                             pixCopiaEColaInput.value = data.pixCopiaECola;
-                            currentTxidInput.value = data.txid;
+                            currentTxidInput.value = data.paymentId;
                             pixQrCodeStep.classList.remove('hidden');
                             pixStatusMessage.textContent = 'Aguardando pagamento...';
                             pixStatusMessage.className = 'mt-4 p-3 rounded-md text-sm bg-blue-100 text-blue-700 border border-blue-300';
-                            startPixStatusCheck(data.txid);
-                        }
+                            startPixStatusCheck(data.paymentId);
                     } else {
                         pixFormError.textContent = data.message || 'Erro ao gerar Pix.';
                         pixFormStep.classList.remove('hidden');
@@ -710,7 +631,6 @@ try {
                     pixLoading.classList.add('hidden');
                     generatePixButton.disabled = false;
                     generatePixButtonSpinner.classList.add('hidden');
-                    updateProviderUI();
                     pixFormError.textContent = 'Erro de comunicação. Tente novamente.';
                     pixFormStep.classList.remove('hidden');
                 }
@@ -763,13 +683,7 @@ try {
 
 
                 try {
-                    let verifyEndpoint = 'payments/verificar_pix_efi.php?txid=' + txid;
-                    if (paymentProviderSelect && paymentProviderSelect.value === 'asaas-pix') {
-                        verifyEndpoint = `payments/verificar_pix_asaas.php?txid=${txid}`;
-                    }
-                    if (paymentProviderSelect && paymentProviderSelect.value === 'asaas-card') {
-                        verifyEndpoint = `payments/verificar_cartao_asaas.php?paymentId=${txid}`;
-                    }
+                    let verifyEndpoint = "payments/mercadopago/verificar_pix.php?paymentId=" + txid;
                     const response = await fetch(verifyEndpoint);
                     const data = await response.json();
 
@@ -818,7 +732,6 @@ try {
                 e.target.value = formattedValue;
             });
         }
-        updateProviderUI();
     });
     </script>
 </body>
